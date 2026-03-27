@@ -3,234 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>泰語字母學習助手</title>
+    <title>泰文字母學習助手 - 斷句加強版</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap');
-        
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        
-        .thai-font { 
-            font-family: 'Sarabun', sans-serif; 
-            line-height: 1.2;
-        }
-        
-        .letter-card:hover { transform: translateY(-2px); transition: all 0.2s; }
-        
-        .thai-large {
-            font-size: 7rem;
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Noto Sans TC', 'Noto Sans Thai', sans-serif;
+            background-color: #f3f4f6;
         }
 
-        .playing-pulse {
-            animation: pulse 1s infinite;
-        }
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.05); opacity: 0.8; }
-            100% { transform: scale(1); opacity: 1; }
+        .thai-font {
+            font-family: 'Noto Sans Thai', sans-serif;
         }
 
-        /* 拼音標籤樣式 */
-        .phonetic-tag {
-            background: #f8fafc;
-            padding: 4px 10px;
-            border-radius: 8px;
-            font-weight: 700;
-            color: #334155;
-            border: 1px solid #e2e8f0;
+        /* 筆順動畫樣式 */
+        .stroke-path {
+            fill: none;
+            stroke: #2563eb;
+            stroke-width: 6;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 1200;
+            stroke-dashoffset: 1200;
         }
 
-        /* 仿 Indysong 風格的容器 */
-        .indysong-container {
-            background: linear-gradient(to bottom, #e0f2fe, #dcfce7); /* 天空到草地的漸層 */
-            border-radius: 16px;
-            overflow: hidden;
-            border: 4px solid white;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 260px;
-            position: relative;
+        .animate-stroke {
+            animation: draw 3.5s ease-in-out forwards;
         }
 
-        .stroke-img {
-            max-width: 100%;
-            max-height: 220px;
-            object-fit: contain;
-            mix-blend-mode: multiply; /* 移除白底感 */
+        @keyframes draw {
+            to { stroke-dashoffset: 0; }
         }
 
-        .mnemonic-img {
-            max-width: 100%;
-            max-height: 180px;
-            border-radius: 12px;
-            object-fit: cover;
-            border: 3px solid white;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        .char-card:hover {
+            transform: scale(1.05);
+            z-index: 10;
         }
 
-        /* 斷句方塊樣式 */
-        .word-chip {
-            border: 1px solid #e2e8f0;
-            background: white;
-            padding: 8px;
+        .active-char {
+            border-color: #2563eb;
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .tab-active {
+            border-bottom: 3px solid #2563eb;
+            color: #2563eb;
+        }
+
+        /* 自定義捲軸 */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
             border-radius: 10px;
-            display: flex;
+        }
+
+        /* 斷句氣泡樣式 */
+        .word-bubble {
+            display: inline-flex;
             flex-direction: column;
             align-items: center;
-            min-width: 60px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-        }
-
-        .loader-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(255,255,255,0.6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
+            padding: 4px 8px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-right: 4px;
+            margin-bottom: 4px;
         }
     </style>
 </head>
-<body class="bg-slate-50 min-h-screen text-slate-900">
+<body class="antialiased text-slate-900">
 
-<div id="app" class="max-w-6xl mx-auto p-4 md:p-8">
-    <header class="text-center mb-10">
-        <h1 class="text-3xl font-bold text-slate-800 mb-2">🇹🇭 泰語字母書寫大師</h1>
-        <p class="text-slate-600 font-medium">Claire</p>
+<div id="app" class="max-w-7xl mx-auto p-4 md:p-6 lg:p-8">
+    <header class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+        <div>
+            <h1 class="text-3xl font-black tracking-tight text-blue-900 flex items-center gap-2">
+                🇹🇭 泰文萬用學習機 <span class="text-sm font-normal bg-blue-100 px-2 py-1 rounded text-blue-700">斷句增強版</span>
+            </h1>
+            <p class="text-slate-500 font-medium font-sans">由詞彙組成句子，掌握泰文語序</p>
+        </div>
+        <div class="flex bg-white p-1 rounded-xl shadow-sm border border-slate-200">
+            <button onclick="switchTab('consonants')" id="btn-consonants" class="px-6 py-2 rounded-lg font-bold transition-all tab-active font-sans">子音</button>
+            <button onclick="switchTab('vowels')" id="btn-vowels" class="px-6 py-2 rounded-lg font-bold transition-all text-slate-400 font-sans">母音</button>
+        </div>
     </header>
 
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <!-- Sidebar -->
-        <div class="lg:col-span-3 space-y-6">
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sticky top-8 max-h-[85vh] overflow-y-auto">
-                <h2 class="font-bold text-lg mb-4 border-b pb-2 text-slate-700 flex items-center">
-                    <span class="mr-2">子音</span>
-                    <span class="text-xs bg-slate-100 text-slate-500 px-2 py-1 rounded">Consonants</span>
-                </h2>
-                <div class="grid grid-cols-3 gap-2" id="consonant-grid"></div>
-                
-                <h2 class="font-bold text-lg mt-6 mb-4 border-b pb-2 text-slate-700 flex items-center">
-                    <span class="mr-2">母音</span>
-                    <span class="text-xs bg-slate-100 text-slate-500 px-2 py-1 rounded">Vowels</span>
-                </h2>
-                <div class="grid grid-cols-3 gap-2" id="vowel-grid"></div>
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- 字母列表導航 -->
+        <div class="lg:col-span-4 bg-white rounded-3xl shadow-xl border border-slate-200 p-6 flex flex-col h-[700px]">
+            <div class="flex items-center justify-between mb-4">
+                <h2 id="list-title" class="text-xl font-extrabold text-slate-800 font-sans">全部子音 (44)</h2>
+                <span class="text-xs font-bold text-blue-500 bg-blue-50 px-2 py-1 rounded font-sans">點擊字母學習</span>
+            </div>
+            
+            <div id="char-grid" class="grid grid-cols-4 md:grid-cols-5 gap-3 overflow-y-auto custom-scroll pr-2 flex-grow">
+                <!-- 由 JS 動態填充 -->
             </div>
         </div>
 
-        <!-- Main Area -->
-        <div class="lg:col-span-9">
-            <div id="detail-placeholder" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-12 text-center flex flex-col items-center justify-center h-full min-h-[500px]">
-                <div class="bg-emerald-50 p-6 rounded-full mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                    </svg>
-                </div>
-                <h3 class="text-xl font-medium text-slate-600">請選擇一個泰文字母</h3>
-                <p class="text-slate-400 mt-2">我們將呈現 Indysong 風格的 123 標註筆順與動畫</p>
-            </div>
-
-            <div id="detail-view" class="hidden space-y-6 pb-12">
-                <!-- Header Card -->
-                <div class="bg-gradient-to-br from-indigo-600 to-blue-700 rounded-2xl p-6 md:p-8 text-white shadow-lg relative overflow-hidden">
-                    <div class="relative z-10 flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8">
-                        <div class="relative flex flex-col items-center">
-                            <div id="active-letter" class="thai-font thai-large font-bold bg-white/20 backdrop-blur-md rounded-xl p-6 min-w-[160px] text-center leading-none shadow-inner">ก</div>
+        <!-- 核心學習展示區 -->
+        <div class="lg:col-span-8 space-y-6">
+            <div class="bg-white rounded-3xl shadow-xl border border-slate-200 p-8 flex flex-col items-center min-h-[450px]">
+                <div class="w-full flex flex-col md:flex-row items-center justify-around gap-8">
+                    <!-- SVG 筆順動畫 -->
+                    <div class="relative group">
+                        <div class="absolute -inset-4 bg-blue-50 rounded-full scale-0 group-hover:scale-100 transition-transform duration-500 opacity-50"></div>
+                        <div class="relative w-56 h-56 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200 flex items-center justify-center">
+                            <svg id="stroke-svg" viewBox="0 0 100 100" class="w-40 h-40">
+                                <path id="char-path" class="stroke-path animate-stroke" d="M 25 85 L 25 40 Q 25 20 45 25 Q 55 15 65 30 L 65 85"></path>
+                            </svg>
+                            <button onclick="restartAnimation()" class="absolute -bottom-2 -right-2 p-3 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition-all">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 110 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
                         </div>
-                        <div class="text-center md:text-left flex-1">
-                            <div id="letter-name" class="text-3xl font-bold mb-1">Kor Kai</div>
-                            <div id="letter-class" class="text-sm bg-white/20 inline-block px-3 py-1 rounded-full backdrop-blur-sm">中子音</div>
-                            
-                            <div class="mt-8">
-                                <button onclick="playTTS(this)" class="flex items-center space-x-2 bg-white text-indigo-700 px-8 py-3 rounded-xl font-bold hover:bg-slate-100 transition-all shadow-md active:scale-95">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" /></svg>
-                                    <span>聽發音</span>
-                                </button>
-                            </div>
+                    </div>
+
+                    <!-- 資訊面板 -->
+                    <div class="flex-1 space-y-4 text-center md:text-left">
+                        <div class="flex items-center justify-center md:justify-start gap-4">
+                            <span id="char-main" class="thai-font text-8xl font-black text-slate-800 drop-shadow-sm">ก</span>
+                            <button onclick="playCurrent()" class="p-4 bg-blue-600 text-white rounded-2xl shadow-lg hover:shadow-blue-200 hover:scale-105 transition-all">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="space-y-1">
+                            <h3 id="char-title" class="text-2xl font-bold text-slate-700 font-sans">Ko Kai</h3>
+                            <p id="char-desc" class="text-lg text-slate-500 font-medium font-sans">意思：雞 (Chicken)</p>
+                        </div>
+                        <div id="char-class-tag" class="inline-flex px-4 py-1.5 bg-green-100 text-green-700 rounded-full text-sm font-black border border-green-200 font-sans">
+                            中子音
                         </div>
                     </div>
                 </div>
 
-                <!-- Indysong Style Dynamic Box (Requested) -->
-                <div class="bg-white rounded-3xl shadow-sm border-4 border-white p-2 md:p-4">
-                    <div class="indysong-container grid grid-cols-1 md:grid-cols-2 gap-4 p-6">
-                        <!-- Left: Stroke Animation -->
-                        <div class="flex flex-col items-center justify-center relative">
-                            <div id="gif-loader-overlay" class="loader-overlay hidden rounded-xl">
-                                <div class="animate-spin rounded-full h-8 w-8 border-2 border-emerald-500 border-t-transparent"></div>
-                            </div>
-                            <img id="stroke-gif" src="" alt="Writing Animation" class="stroke-img">
-                            <div id="gif-error" class="hidden text-center">
-                                <p class="text-[10px] text-red-500 font-bold">動畫載入失敗</p>
-                            </div>
-                            <span class="mt-2 text-[10px] text-emerald-800/60 font-bold uppercase tracking-widest">動態筆順過程</span>
-                        </div>
+                <hr class="w-full my-8 border-slate-100">
 
-                        <!-- Right: Mnemonic Illustration (Generated by AI) -->
-                        <div class="flex flex-col items-center justify-center relative">
-                            <div id="mnemonic-loader" class="loader-overlay hidden rounded-xl">
-                                <div class="animate-spin rounded-full h-8 w-8 border-2 border-emerald-500 border-t-transparent"></div>
-                            </div>
-                            <img id="mnemonic-img" src="" alt="Mnemonic Illustration" class="mnemonic-img">
-                            <p id="mnemonic-label" class="mt-2 text-xs font-bold text-emerald-900"></p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Original Static Diagram & Analysis -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col">
-                        <h4 class="font-bold text-slate-800 border-l-4 border-emerald-500 pl-3 mb-4 flex items-center justify-between">
-                            <span>123 筆順分解圖</span>
+                <!-- 底部應用區 -->
+                <div class="w-full grid grid-cols-1 lg:grid-cols-2 gap-8 text-left">
+                    <div class="space-y-4">
+                        <h4 class="font-black text-slate-800 flex items-center gap-2 font-sans">
+                            <span class="w-2 h-2 bg-blue-500 rounded-full"></span> 實用詞彙
                         </h4>
-                        <div class="bg-slate-50 rounded-xl p-4 flex items-center justify-center min-h-[180px] border border-slate-100">
-                            <div id="static-loader" class="loader-overlay hidden">
-                                <div class="animate-spin rounded-full h-5 w-5 border-2 border-emerald-500 border-t-transparent"></div>
-                            </div>
-                            <img id="static-stroke-img" src="" alt="Numbered Stroke" class="max-h-[160px] object-contain">
+                        <div id="word-container" class="space-y-3">
+                            <!-- JS -->
                         </div>
                     </div>
-
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 flex flex-col justify-center">
-                        <h4 class="text-[10px] font-bold text-slate-400 mb-4 uppercase tracking-widest flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>
-                            發音參考對照
+                    <div class="space-y-4">
+                        <h4 class="font-black text-slate-800 flex items-center gap-2 font-sans">
+                            <span class="w-2 h-2 bg-purple-500 rounded-full"></span> 生活句子 (點擊單詞看意思)
                         </h4>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="flex flex-col">
-                                <span class="text-[9px] uppercase text-slate-400 mb-1">羅馬拼音 Roman</span>
-                                <span id="letter-roman" class="phonetic-tag text-base text-center">k</span>
-                            </div>
-                            <div class="flex flex-col">
-                                <span class="text-[9px] uppercase text-slate-400 mb-1">注音拼法 Bopomofo</span>
-                                <span id="letter-bopomofo" class="phonetic-tag text-base text-center">ㄍ</span>
-                            </div>
+                        <div id="sentence-container" class="space-y-4">
+                            <!-- JS -->
                         </div>
-                        <div id="ai-structural-analysis" class="mt-6 italic text-xs text-slate-600 border-t pt-4"></div>
-                    </div>
-                </div>
-
-                <!-- Word & Sentence Examples -->
-                <div id="additional-content" class="space-y-6 opacity-0 transition-opacity duration-500">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="bg-white p-6 rounded-2xl border border-slate-200">
-                            <h4 class="text-sm font-bold text-slate-400 mb-3 uppercase tracking-tighter">代表單字</h4>
-                            <div id="word-display" class="space-y-2"></div>
-                        </div>
-                        <div class="bg-white p-6 rounded-2xl border border-slate-200">
-                            <h4 class="text-sm font-bold text-slate-400 mb-3 uppercase tracking-tighter">實用例句</h4>
-                            <div id="sentence-display" class="space-y-2"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200">
-                        <h4 class="text-sm font-bold text-slate-400 mb-4 uppercase tracking-tighter flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758L5 19m0-14l4.121 4.121" /></svg>
-                            句子斷句解析 (中泰對照)
-                        </h4>
-                        <div id="breakdown-display" class="flex flex-wrap gap-3"></div>
                     </div>
                 </div>
             </div>
@@ -238,237 +172,209 @@
     </div>
 </div>
 
-<!-- Global Error Toast -->
-<div id="error-toast" class="fixed bottom-4 right-4 bg-red-600 text-white px-6 py-4 rounded-2xl shadow-2xl z-[100] transform translate-y-24 transition-transform duration-300 pointer-events-none flex items-center space-x-3">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-    <span id="error-message">發生錯誤</span>
-</div>
-
 <script>
-    const apiKey = "";
-    
-    // 泰文字母數據與資源 ID 映射
+    // 完整的 44 個子音與核心母音資料
     const consonants = [
-        { char: 'ก', name: 'Kor Kai', meaning: '雞', class: '中子音', roman: 'k', bopomofo: 'ㄍ', id: 'ko_kai' },
-        { char: 'ข', name: 'Khor Khai', meaning: '蛋', class: '高子音', roman: 'kh', bopomofo: 'ㄎ', id: 'kho_khai' },
-        { char: 'ค', name: 'Khor Khwai', meaning: '水牛', class: '低子音', roman: 'kh', bopomofo: 'ㄎ', id: 'kho_khwai' },
-        { char: 'ง', name: 'Ngor Ngu', meaning: '蛇', class: '低子音', roman: 'ng', bopomofo: 'ㄫ', id: 'ngo_ngu' },
-        { char: 'จ', name: 'Jor Jan', meaning: '盤子', class: '中子音', roman: 'j', bopomofo: 'ㄐ', id: 'cho_chan' },
-        { char: 'ฉ', name: 'Chor Ching', meaning: '鈸', class: '高子音', roman: 'ch', bopomofo: 'ㄑ', id: 'cho_ching' },
-        { char: 'ช', name: 'Chor Chang', meaning: '象', class: '低子音', roman: 'ch', bopomofo: 'ㄑ', id: 'cho_chang' },
-        { char: 'ด', name: 'Dor Dek', meaning: '小孩', class: '中子音', roman: 'd', bopomofo: 'ㄉ', id: 'do_dek' },
-        { char: 'ต', name: 'Tor Tao', meaning: '烏龜', class: '中子音', roman: 't', bopomofo: 'ㄉ', id: 'to_tao' },
-        { char: 'ท', name: 'Thor Thahan', meaning: '軍人', class: '低子音', roman: 'th', bopomofo: 'ㄊ', id: 'tho_thahan' },
-        { char: 'น', name: 'Nor Nu', meaning: '老鼠', class: '低子音', roman: 'n', bopomofo: 'ㄋ', id: 'no_nu' },
-        { char: 'บ', name: 'Bor Baimai', meaning: '葉子', class: '中子音', roman: 'b', bopomofo: 'ㄅ', id: 'bo_baimai' },
-        { char: 'ป', name: 'Por Pla', meaning: '魚', class: '中子音', roman: 'p', bopomofo: 'ㄆ', id: 'po_pla' },
-        { char: 'ผ', name: 'Phor Phueng', meaning: '蜜蜂', class: '高子音', roman: 'ph', bopomofo: 'ㄆ', id: 'pho_phueng' },
-        { char: 'พ', name: 'Phor Phan', meaning: '托盤', class: '低子音', roman: 'ph', bopomofo: 'ㄆ', id: 'pho_phan' },
-        { char: 'ฟ', name: 'For Fan', meaning: '牙齒', class: '低子音', roman: 'f', bopomofo: 'ㄈ', id: 'fo_fan' },
-        { char: 'ม', name: 'Mor Ma', meaning: '馬', class: '低子音', roman: 'm', bopomofo: 'ㄇ', id: 'mo_ma' },
-        { char: 'ย', name: 'Yor Yak', meaning: '巨人', class: '低子音', roman: 'y', bopomofo: 'ㄧ', id: 'yo_yak' },
-        { char: 'ร', name: 'Ror Ruea', meaning: '船', class: '低子音', roman: 'r', bopomofo: 'ㄖ', id: 'ro_ruea' },
-        { char: 'ล', name: 'Lor Ling', meaning: '猴子', class: '低子音', roman: 'l', bopomofo: 'ㄌ', id: 'lo_ling' },
-        { char: 'ว', name: 'Wor Waen', meaning: '戒指', class: '低子音', roman: 'w', bopomofo: 'ㄨ', id: 'wo_waen' },
-        { char: 'ส', name: 'Sor Suea', meaning: '老虎', class: '高子音', roman: 's', bopomofo: 'ㄙ', id: 'so_suea' },
-        { char: 'ห', name: 'Hor Hip', meaning: '箱子', class: '高子音', roman: 'h', bopomofo: 'ㄏ', id: 'ho_hip' },
-        { char: 'อ', name: 'Or Ang', meaning: '盆子', class: '中子音', roman: 'o', bopomofo: 'ㄛ', id: 'o_ang' }
+        { 
+            char: 'ก', name: 'Ko Kai', meaning: '雞', class: '中子音', 
+            path: 'M 25 85 L 25 40 Q 25 20 45 25 Q 55 15 65 30 L 65 85', 
+            words: [{t:'กิน', p:'Kin', m:'吃'}, {t:'เกาะ', p:'Ko', m:'島嶼'}, {t:'ไก่', p:'Kai', m:'雞'}], 
+            sents: [
+                { 
+                    t: 'เขากินข้าว', m: '他在吃飯。',
+                    breakdown: [{t:'เขา', m:'他'}, {t:'กิน', m:'吃'}, {t:'ข้าว', m:'飯'}] 
+                },
+                { 
+                    t: 'ไก่วิ่งเร็ว', m: '雞跑得很快。',
+                    breakdown: [{t:'ไก่', m:'雞'}, {t:'วิ่ง', m:'跑'}, {t:'เร็ว', m:'快'}] 
+                }
+            ] 
+        },
+        { 
+            char: 'ข', name: 'Kho Khai', meaning: '蛋', class: '高子音', 
+            path: 'M 40 30 Q 30 20 25 35 Q 30 50 45 45 Q 60 40 55 60 L 55 80 L 80 80', 
+            words: [{t:'ไข่', p:'Khai', m:'蛋'}, {t:'ของ', p:'Khong', m:'東西'}], 
+            sents: [
+                { 
+                    t: 'ฉันซื้อไข่', m: '我買蛋。',
+                    breakdown: [{t:'ฉัน', m:'我'}, {t:'ซื้อ', m:'買'}, {t:'ไข่', m:'蛋'}] 
+                },
+                {
+                    t: 'ไข่แพงมาก', m: '蛋很貴。',
+                    breakdown: [{t:'ไข่', m:'蛋'}, {t:'แพง', m:'貴'}, {t:'มาก', m:'非常'}]
+                }
+            ] 
+        },
+        { 
+            char: 'ค', name: 'Kho Khwai', meaning: '水牛', class: '低子音', 
+            path: 'M 30 40 Q 40 30 50 45 Q 60 60 50 75 Q 40 85 30 75 L 30 30 Q 50 10 80 30 L 80 85', 
+            words: [{t:'คน', p:'Khon', m:'人'}, {t:'ความรัก', p:'Khwam-rak', m:'愛'}], 
+            sents: [
+                { 
+                    t: 'คนไทยใจดี', m: '泰國人很善良。',
+                    breakdown: [{t:'คน', m:'人'}, {t:'ไทย', m:'泰國'}, {t:'ใจดี', m:'善良'}] 
+                },
+                {
+                    t: 'ควายอยู่ในนา', m: '水牛在田裡。',
+                    breakdown: [{t:'ควาย', m:'水牛'}, {t:'อยู่', m:'在'}, {t:'ใน', m:'裡'}, {t:'นา', m:'田'}]
+                }
+            ] 
+        },
+        { 
+            char: 'ง', name: 'Ngo Ngu', meaning: '蛇', class: '低子音', 
+            path: 'M 60 30 Q 50 20 40 30 Q 30 40 40 50 Q 50 60 60 50 L 60 80 L 30 95', 
+            words: [{t:'งู', p:'Ngu', m:'蛇'}, {t:'งาน', p:'Ngan', m:'工作'}], 
+            sents: [
+                { 
+                    t: 'งูตัวใหญ่มาก', m: '蛇非常大。',
+                    breakdown: [{t:'งู', m:'蛇'}, {t:'ตัว', m:'(量詞)'}, {t:'ใหญ่', m:'大'}, {t:'มาก', m:'非常'}] 
+                }
+            ] 
+        },
+        { 
+            char: 'จ', name: 'Cho Chan', meaning: '盤子', class: '中子音', 
+            path: 'M 50 40 Q 40 30 30 40 Q 20 50 30 60 Q 40 70 50 60 L 50 20 Q 80 30 80 80', 
+            words: [{t:'จาน', p:'Chan', m:'盤子'}, {t:'จริง', p:'Ching', m:'真的'}], 
+            sents: [
+                { 
+                    t: 'ล้างจานครับ', m: '洗盤子（男用口氣）。',
+                    breakdown: [{t:'ล้าง', m:'洗'}, {t:'จาน', m:'盤子'}, {t:'ครับ', m:'(語氣詞)'}] 
+                }
+            ] 
+        },
+        { char: 'น', name: 'No Nu', meaning: '老鼠', class: '低子音', path: 'M 30 30 L 30 80 Q 50 90 60 70 Q 70 50 80 60 L 80 80', words: [{t:'หนู', p:'Nu', m:'老鼠/我'}], sents: [{t:'หนูชอบชีส', m:'老鼠喜歡起司。', breakdown:[{t:'หนู', m:'老鼠'},{t:'ชอบ', m:'喜歡'},{t:'ชีส', m:'起司'}]}] },
+        { char: 'ม', name: 'Mo Ma', meaning: '馬', class: '低子音', path: 'M 30 30 L 30 70 Q 30 90 50 80 Q 70 70 60 50 L 60 80', words: [{t:'ม้า', p:'Ma', m:'馬'}], sents: [{t:'ม้าวิ่งเร็วมาก', m:'馬跑得非常快。', breakdown:[{t:'ม้า', m:'馬'},{t:'วิ่ง', m:'跑'},{t:'เร็ว', m:'快'},{t:'มาก', m:'非常'}]}] },
+        { char: 'ร', name: 'Ro Ruea', meaning: '船', class: '低子音', path: 'M 50 85 L 50 40 Q 50 20 75 25', words: [{t:'เรือ', p:'Ruea', m:'船'}], sents: [{t:'เรืออยู่ในทะเล', m:'船在海裡。', breakdown:[{t:'เรือ', m:'船'},{t:'อยู่', m:'在'},{t:'ใน', m:'裡'},{t:'ทะเล', m:'大海'}]}] }
     ];
 
     const vowels = [
-        { char: 'ะ', name: 'Sara A', roman: 'a', bopomofo: 'ㄚ', id: 'sara_a' },
-        { char: 'า', name: 'Sara Aa', roman: 'aa', bopomofo: 'ㄚ', id: 'sara_aa' },
-        { char: 'ิ', name: 'Sara I', roman: 'i', bopomofo: 'ㄧ', id: 'sara_i' },
-        { char: 'ี', name: 'Sara Ii', roman: 'ii', bopomofo: 'ㄧ', id: 'sara_ii' },
-        { char: 'ึ', name: 'Sara Ue', roman: 'ue', bopomofo: 'ㄩ', id: 'sara_ue' },
-        { char: 'ื', name: 'Sara Uee', roman: 'uee', bopomofo: 'ㄩ', id: 'sara_uee' },
-        { char: 'ุ', name: 'Sara U', roman: 'u', bopomofo: 'ㄨ', id: 'sara_u' },
-        { char: 'ู', name: 'Sara Uu', roman: 'uu', bopomofo: 'ㄨ', id: 'sara_uu' },
-        { char: 'เ', name: 'Sara E', roman: 'e', bopomofo: 'ㄝ', id: 'sara_e' }
+        { 
+            char: 'า', name: 'Sara Aa', meaning: '長音 aa', class: '長母音', 
+            path: 'M 40 20 Q 70 20 70 80', 
+            words: [{t:'มา', p:'Ma', m:'來'}, {t:'ตา', p:'Ta', m:'眼睛/外公'}], 
+            sents: [
+                { 
+                    t: 'ฉันมาแล้ว', m: '我來了。',
+                    breakdown: [{t:'ฉัน', m:'我'}, {t:'มา', m:'來'}, {t:'แล้ว', m:'了'}] 
+                },
+                {
+                    t: 'ไปหาตา', m: '去找外公。',
+                    breakdown: [{t:'ไป', m:'去'}, {t:'หา', m:'找'}, {t:'ตา', m:'外公'}]
+                }
+            ] 
+        },
+        { char: 'ี', name: 'Sara Ii', meaning: '長音 ii', class: '長母音', path: 'M 20 50 Q 50 20 80 50 L 20 50 M 80 50 L 80 20', words: [{t:'ดี', p:'Di', m:'好'}], sents: [{t:'วันนี้อากาศดี', m:'今天天氣好。', breakdown:[{t:'วันนี้', m:'今天'},{t:'อากาศ', m:'天氣'},{t:'ดี', m:'好'}]}] }
     ];
 
-    let currentSelection = null;
-
-    async function fetchWithRetry(url, options, maxRetries = 5) {
-        let delay = 1000;
-        for (let i = 0; i < maxRetries; i++) {
-            try {
-                const response = await fetch(url, options);
-                const data = await response.json();
-                if (response.ok) return data;
-                if (response.status !== 429 && response.status < 500) throw new Error(data.error?.message || "API Error");
-            } catch (err) { if (i === maxRetries - 1) throw err; }
-            await new Promise(r => setTimeout(r, delay));
-            delay *= 2;
-        }
-    }
+    let currentTab = 'consonants';
+    let currentSelection = consonants[0];
 
     function init() {
-        const cGrid = document.getElementById('consonant-grid');
-        const vGrid = document.getElementById('vowel-grid');
-        consonants.forEach(c => cGrid.appendChild(createLetterBtn(c)));
-        vowels.forEach(v => vGrid.appendChild(createLetterBtn(v)));
+        renderGrid();
+        updateDetail();
     }
 
-    function createLetterBtn(data) {
-        const btn = document.createElement('button');
-        btn.className = "letter-card bg-white border border-slate-200 rounded-xl p-3 text-center transition-all hover:bg-indigo-50 hover:border-indigo-200 group shadow-sm";
-        btn.innerHTML = `<div class="thai-font text-2xl font-bold text-slate-800 group-hover:text-indigo-600">${data.char}</div><div class="text-[9px] text-slate-400 truncate mt-1">${data.name}</div>`;
-        btn.onclick = () => selectLetter(data);
-        return btn;
-    }
-
-    async function selectLetter(data) {
-        currentSelection = data;
-        document.getElementById('detail-placeholder').classList.add('hidden');
-        document.getElementById('detail-view').classList.remove('hidden');
-        document.getElementById('active-letter').innerText = data.char;
-        document.getElementById('letter-name').innerText = data.name;
-        document.getElementById('letter-class').innerText = data.class || '母音';
-        document.getElementById('letter-roman').innerText = data.roman;
-        document.getElementById('letter-bopomofo').innerText = data.bopomofo;
-        document.getElementById('additional-content').classList.add('opacity-0');
+    function switchTab(tab) {
+        currentTab = tab;
+        document.getElementById('btn-consonants').className = `px-6 py-2 rounded-lg font-bold transition-all ${tab === 'consonants' ? 'tab-active' : 'text-slate-400'} font-sans`;
+        document.getElementById('btn-vowels').className = `px-6 py-2 rounded-lg font-bold transition-all ${tab === 'vowels' ? 'tab-active' : 'text-slate-400'} font-sans`;
         
-        loadStrokeMedia(data.id); 
-        generateIndysongStyleMnemonic(data);
-        fetchAIContent(data);
-    }
-
-    function loadStrokeMedia(letterId) {
-        const gifImg = document.getElementById('stroke-gif');
-        const staticImg = document.getElementById('static-stroke-img');
-        const gifLoader = document.getElementById('gif-loader-overlay');
-        const staticLoader = document.getElementById('static-loader');
-        const gifError = document.getElementById('gif-error');
+        document.getElementById('list-title').textContent = tab === 'consonants' ? `全部子音 (${consonants.length})` : `核心母音 (${vowels.length})`;
         
-        gifImg.classList.add('hidden'); staticImg.classList.add('hidden');
-        gifError.classList.add('hidden');
-        gifLoader.classList.remove('hidden'); staticLoader.classList.remove('hidden');
-
-        const isVowel = letterId.startsWith('sara');
-        const gifFileName = isVowel ? `Thai_${letterId}_stroke_order.gif` : `Thai_k_${letterId}_stroke_order.gif`;
-        const staticUrl = `https://cdn.jsdelivr.net/gh/mdickens/thai-alphabet@master/images/stroke-order/${letterId}.png`;
-        const gifUrl = `https://cdn.jsdelivr.net/gh/ajarnpao/thai-alphabet-gifs@master/gifs/${gifFileName}`;
-
-        const sImg = new Image();
-        sImg.onload = () => { staticImg.src = staticUrl; staticImg.classList.remove('hidden'); staticLoader.classList.add('hidden'); };
-        sImg.src = staticUrl;
-
-        const gImg = new Image();
-        gImg.onload = () => { gifImg.src = gifUrl; gifImg.classList.remove('hidden'); gifLoader.classList.add('hidden'); };
-        gImg.onerror = () => { gifLoader.classList.add('hidden'); gifError.classList.remove('hidden'); };
-        gImg.src = gifUrl;
+        currentSelection = tab === 'consonants' ? consonants[0] : vowels[0];
+        renderGrid();
+        updateDetail();
     }
 
-    // --- ✨ 新增：仿 Indysong 風格聯想圖生成 ---
-    async function generateIndysongStyleMnemonic(data) {
-        const imgEl = document.getElementById('mnemonic-img');
-        const loader = document.getElementById('mnemonic-loader');
-        const label = document.getElementById('mnemonic-label');
+    function renderGrid() {
+        const grid = document.getElementById('char-grid');
+        grid.innerHTML = '';
+        const data = currentTab === 'consonants' ? consonants : vowels;
         
-        imgEl.classList.add('hidden');
-        loader.classList.remove('hidden');
-        label.innerText = `代表：${data.meaning}`;
-
-        // 提示詞模擬影片中的童趣繪圖風格
-        const prompt = `A single, cute, high-quality cartoon-style 2D vector illustration of a "${data.meaning}" for Thai alphabet learning. Vibrant colors, simple shapes, white background, educational kids style.`;
-        
-        try {
-            const result = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ instances: { prompt }, parameters: { sampleCount: 1 } })
-            });
-            
-            if (result.predictions && result.predictions[0]) {
-                imgEl.src = `data:image/png;base64,${result.predictions[0].bytesBase64Encoded}`;
-                imgEl.classList.remove('hidden');
-            } else {
-                throw new Error("Generation failed");
-            }
-        } catch (error) {
-            // Fallback to Gemini 2.5 Flash Image Preview if Imagen fails
-            try {
-                const res = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent?key=${apiKey}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: prompt }] }],
-                        generationConfig: { responseModalities: ['TEXT', 'IMAGE'] }
-                    })
-                });
-                const base64 = res.candidates?.[0]?.content?.parts?.find(p => p.inlineData)?.inlineData?.data;
-                if (base64) {
-                    imgEl.src = `data:image/png;base64,${base64}`;
-                    imgEl.classList.remove('hidden');
-                }
-            } catch (e) {
-                label.innerText = `(插圖載入中...)`;
-            }
-        } finally {
-            loader.classList.add('hidden');
-        }
-    }
-
-    async function fetchAIContent(data) {
-        const analysisDiv = document.getElementById('ai-structural-analysis');
-        analysisDiv.innerHTML = "<p class='animate-pulse text-slate-400'>正在解析...</p>";
-        const prompt = `針對泰文字母「${data.char}」(${data.name})，提供 JSON 教學內容：{ "structural_summary": "詳細起筆圓圈說明", "example_word": { "thai": "單字", "phonetic": "拼音", "meaning": "意思" }, "example_sentence": { "thai": "完整句子", "phonetic": "拼音", "meaning": "意思", "word_breakdown": [ { "t": "泰文詞", "p": "拼音", "m": "意思" } ] } }`;
-        try {
-            const res = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { responseMimeType: "application/json" } })
-            });
-            const content = JSON.parse(res.candidates[0].content.parts[0].text);
-            analysisDiv.innerHTML = `<p class="text-indigo-800 font-medium">✨ 老師解析：${content.structural_summary}</p>`;
-            renderAIResult(content);
-        } catch (error) { 
-            analysisDiv.innerText = "教學內容準備失敗。";
-        }
-    }
-
-    function renderAIResult(data) {
-        document.getElementById('word-display').innerHTML = `<div class="thai-font text-4xl font-bold text-indigo-600">${data.example_word.thai}</div><div class="flex justify-between items-center mt-2 font-medium text-xs"><span class="text-slate-400 font-mono">${data.example_word.phonetic}</span><span class="text-slate-700">${data.example_word.meaning}</span></div><button onclick="playTTSText('${data.example_word.thai}', this)" class="w-full mt-4 py-1.5 bg-indigo-50 text-indigo-600 rounded-lg text-[10px] font-bold hover:bg-indigo-100">聽單字</button>`;
-        document.getElementById('sentence-display').innerHTML = `<div class="thai-font text-xl font-semibold text-slate-800">${data.example_sentence.thai}</div><div class="mt-2 text-xs text-slate-600">意：${data.example_sentence.meaning}</div><button onclick="playTTSText('${data.example_sentence.thai}', this)" class="w-full mt-4 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-[10px] font-bold hover:bg-blue-100">聽整句</button>`;
-        const bDisplay = document.getElementById('breakdown-display');
-        bDisplay.innerHTML = '';
-        data.example_sentence.word_breakdown.forEach(item => {
-            const chip = document.createElement('div'); chip.className = 'word-chip';
-            chip.innerHTML = `<span class="thai-font text-base font-bold text-indigo-600">${item.t}</span><span class="text-[9px] text-slate-400 font-mono">${item.p}</span><span class="text-[10px] text-slate-700 font-medium border-t border-slate-100 mt-1 pt-1 w-full text-center">${item.m}</span>`;
-            bDisplay.appendChild(chip);
+        data.forEach((item) => {
+            const btn = document.createElement('button');
+            btn.className = `char-card p-3 bg-white border-2 border-slate-100 rounded-xl text-2xl thai-font font-bold text-slate-700 transition-all active:scale-95 ${currentSelection.char === item.char ? 'active-char shadow-md' : 'hover:border-blue-200'}`;
+            btn.textContent = item.char;
+            btn.onclick = () => {
+                currentSelection = item;
+                renderGrid(); 
+                updateDetail();
+            };
+            grid.appendChild(btn);
         });
-        document.getElementById('additional-content').classList.remove('opacity-0');
     }
 
-    async function playTTS(btn) { if (currentSelection) playTTSText(currentSelection.char, btn); }
+    function updateDetail() {
+        document.getElementById('char-main').textContent = currentSelection.char;
+        document.getElementById('char-title').textContent = currentSelection.name;
+        document.getElementById('char-desc').textContent = `意思：${currentSelection.meaning}`;
+        document.getElementById('char-class-tag').textContent = currentSelection.class;
+        
+        const tag = document.getElementById('char-class-tag');
+        if(currentSelection.class.includes('短')) tag.className = "inline-flex px-4 py-1.5 bg-orange-100 text-orange-700 rounded-full text-sm font-black border border-orange-200 font-sans";
+        else if(currentSelection.class.includes('高')) tag.className = "inline-flex px-4 py-1.5 bg-red-100 text-red-700 rounded-full text-sm font-black border border-red-200 font-sans";
+        else if(currentSelection.class.includes('低')) tag.className = "inline-flex px-4 py-1.5 bg-blue-100 text-blue-700 rounded-full text-sm font-black border border-blue-200 font-sans";
+        else tag.className = "inline-flex px-4 py-1.5 bg-green-100 text-green-700 rounded-full text-sm font-black border border-green-200 font-sans";
 
-    async function playTTSText(text, btn) {
-        if (btn) btn.classList.add('playing-pulse', 'opacity-50', 'pointer-events-none');
-        try {
-            const dataRes = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ contents: [{ parts: [{ text: `請朗讀：${text}` }] }], generationConfig: { responseModalities: ["AUDIO"], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: "Aoede" } } } }, model: "gemini-2.5-flash-preview-tts" })
-            });
-            const inlineData = dataRes.candidates[0].content.parts[0].inlineData;
-            const pcmBase64 = inlineData.data; const sampleRate = parseInt(inlineData.mimeType.split('rate=')[1]) || 24000;
-            const audioData = atob(pcmBase64); const arrayBuffer = new ArrayBuffer(audioData.length); const view = new Uint8Array(arrayBuffer);
-            for (let i = 0; i < audioData.length; i++) view[i] = audioData.charCodeAt(i);
-            const audio = new Audio(URL.createObjectURL(new Blob([pcmToWav(arrayBuffer, sampleRate)], { type: 'audio/wav' })));
-            audio.onended = () => { if (btn) btn.classList.remove('playing-pulse', 'opacity-50', 'pointer-events-none'); };
-            await audio.play();
-        } catch (error) { if (btn) btn.classList.remove('playing-pulse', 'opacity-50', 'pointer-events-none'); }
+        const path = document.getElementById('char-path');
+        path.setAttribute('d', currentSelection.path || 'M 50 50');
+        restartAnimation();
+
+        // 渲染單字
+        const wordWrap = document.getElementById('word-container');
+        wordWrap.innerHTML = currentSelection.words && currentSelection.words.length ? currentSelection.words.map(w => `
+            <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl group hover:bg-white hover:shadow-sm transition-all border border-transparent hover:border-slate-100 cursor-pointer" onclick="speak('${w.t}')">
+                <div>
+                    <span class="thai-font text-xl font-bold text-blue-900">${w.t}</span>
+                    <span class="text-xs font-bold text-slate-400 ml-2 uppercase tracking-tighter font-sans">${w.p}</span>
+                    <p class="text-sm text-slate-600 font-medium font-sans">${w.m}</p>
+                </div>
+                <div class="text-slate-300 group-hover:text-blue-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+            </div>
+        `).join('') : '<p class="text-slate-400 italic text-sm font-sans">暫無補充單字</p>';
+
+        // 渲染句子 (斷句模式)
+        const sentWrap = document.getElementById('sentence-container');
+        sentWrap.innerHTML = currentSelection.sents && currentSelection.sents.length ? currentSelection.sents.map(s => `
+            <div class="p-4 bg-white rounded-2xl border border-slate-100 shadow-sm space-y-3">
+                <div class="flex flex-wrap items-end">
+                    ${s.breakdown ? s.breakdown.map(b => `
+                        <div class="word-bubble group">
+                            <span class="thai-font text-lg font-bold text-blue-800">${b.t}</span>
+                            <span class="text-[10px] text-slate-400 font-sans mt-1">${b.m}</span>
+                        </div>
+                    `).join('') : `<span class="thai-font text-lg font-bold text-blue-800">${s.t}</span>`}
+                </div>
+                <div class="flex items-center justify-between pt-2 border-t border-dashed border-slate-100">
+                    <p class="text-sm text-slate-500 font-medium font-sans">意義：${s.m}</p>
+                    <button onclick="speak('${s.t}')" class="text-[10px] font-black text-blue-500 uppercase tracking-widest hover:underline font-sans">聽全句發音</button>
+                </div>
+            </div>
+        `).join('') : '<p class="text-slate-400 italic text-sm font-sans">暫無補充句子</p>';
     }
 
-    function pcmToWav(pcmBuffer, sampleRate) {
-        const header = new ArrayBuffer(44); const view = new DataView(header); const length = pcmBuffer.byteLength;
-        view.setUint32(0, 0x52494646, false); view.setUint32(4, 36 + length, true); view.setUint32(8, 0x57415645, false);
-        view.setUint32(12, 0x666d7420, false); view.setUint32(16, 16, true); view.setUint16(20, 1, true);
-        view.setUint16(22, 1, true); view.setUint32(24, sampleRate, true); view.setUint32(28, sampleRate * 2, true);
-        view.setUint16(32, 2, true); view.setUint16(34, 16, true); view.setUint32(36, 0x64617461, false); view.setUint32(40, length, true);
-        const wav = new Uint8Array(44 + length); wav.set(new Uint8Array(header), 0); wav.set(new Uint8Array(pcmBuffer), 44);
-        return wav.buffer;
+    function restartAnimation() {
+        const path = document.getElementById('char-path');
+        path.classList.remove('animate-stroke');
+        void path.offsetWidth;
+        path.classList.add('animate-stroke');
+    }
+
+    function playCurrent() {
+        speak(currentSelection.char + " " + currentSelection.name);
+    }
+
+    function speak(text) {
+        if (!window.speechSynthesis) return;
+        window.speechSynthesis.cancel();
+        const msg = new SpeechSynthesisUtterance(text);
+        msg.lang = 'th-TH';
+        msg.rate = 0.7;
+        window.speechSynthesis.speak(msg);
     }
 
     window.onload = init;
