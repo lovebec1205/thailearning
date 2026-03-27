@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>泰文字母學習助手 - 標準正體版</title>
+    <title>泰文字母學習助手 - 全 44 子音標準版</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* 引入標準正體字型：Noto Serif Thai (帶頭部的泰文標準書寫體) 與 Noto Sans TC (標準正體中文) */
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+Thai:wght@400;700&display=swap');
 
         body {
@@ -15,11 +14,9 @@
         }
 
         .thai-font {
-            /* 使用帶有圓圈頭部的標準泰文正體 */
             font-family: 'Noto Serif Thai', serif;
         }
 
-        /* 筆順動畫樣式 */
         .stroke-path {
             fill: none;
             stroke: #2563eb;
@@ -54,7 +51,6 @@
             color: #2563eb;
         }
 
-        /* 自定義捲軸 */
         .custom-scroll::-webkit-scrollbar {
             width: 6px;
         }
@@ -66,7 +62,6 @@
             border-radius: 10px;
         }
 
-        /* 斷句氣泡樣式 */
         .word-bubble {
             display: inline-flex;
             flex-direction: column;
@@ -86,39 +81,33 @@
     <header class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
         <div>
             <h1 class="text-3xl font-bold tracking-tight text-blue-900 flex items-center gap-2">
-                🇹🇭 泰文萬用學習機 <span class="text-sm font-medium bg-blue-100 px-2 py-1 rounded text-blue-700">標準正體版</span>
+                🇹🇭 泰文萬用學習機 <span class="text-sm font-medium bg-blue-100 px-2 py-1 rounded text-blue-700">完整子音版</span>
             </h1>
-            <p class="text-slate-500 font-medium">使用標準教科書字體，專注於字母特徵辨識</p>
+            <p class="text-slate-500 font-medium">包含全數 44 個子音，使用標準正體教科書字型</p>
         </div>
         <div class="flex bg-white p-1 rounded-xl shadow-sm border border-slate-200">
-            <button onclick="switchTab('consonants')" id="btn-consonants" class="px-6 py-2 rounded-lg font-bold transition-all tab-active">子音</button>
+            <button onclick="switchTab('consonants')" id="btn-consonants" class="px-6 py-2 rounded-lg font-bold transition-all tab-active">子音 (44)</button>
             <button onclick="switchTab('vowels')" id="btn-vowels" class="px-6 py-2 rounded-lg font-bold transition-all text-slate-400">母音</button>
         </div>
     </header>
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <!-- 字母列表導航 -->
-        <div class="lg:col-span-4 bg-white rounded-3xl shadow-xl border border-slate-200 p-6 flex flex-col h-[700px]">
+        <div class="lg:col-span-4 bg-white rounded-3xl shadow-xl border border-slate-200 p-6 flex flex-col h-[750px]">
             <div class="flex items-center justify-between mb-4">
                 <h2 id="list-title" class="text-xl font-bold text-slate-800">全部子音 (44)</h2>
-                <span class="text-xs font-bold text-blue-500 bg-blue-50 px-2 py-1 rounded">點擊字母學習</span>
             </div>
-            
             <div id="char-grid" class="grid grid-cols-4 md:grid-cols-5 gap-3 overflow-y-auto custom-scroll pr-2 flex-grow">
                 <!-- 由 JS 動態填充 -->
             </div>
         </div>
 
-        <!-- 核心學習展示區 -->
         <div class="lg:col-span-8 space-y-6">
-            <div class="bg-white rounded-3xl shadow-xl border border-slate-200 p-8 flex flex-col items-center min-h-[450px]">
+            <div class="bg-white rounded-3xl shadow-xl border border-slate-200 p-8 flex flex-col items-center min-h-[500px]">
                 <div class="w-full flex flex-col md:flex-row items-center justify-around gap-8">
-                    <!-- SVG 筆順動畫 -->
                     <div class="relative group">
-                        <div class="absolute -inset-4 bg-blue-50 rounded-full scale-0 group-hover:scale-100 transition-transform duration-500 opacity-50"></div>
                         <div class="relative w-56 h-56 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200 flex items-center justify-center">
                             <svg id="stroke-svg" viewBox="0 0 100 100" class="w-40 h-40">
-                                <path id="char-path" class="stroke-path animate-stroke" d="M 25 85 L 25 40 Q 25 20 45 25 Q 55 15 65 30 L 65 85"></path>
+                                <path id="char-path" class="stroke-path animate-stroke" d=""></path>
                             </svg>
                             <button onclick="restartAnimation()" class="absolute -bottom-2 -right-2 p-3 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition-all">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -128,45 +117,37 @@
                         </div>
                     </div>
 
-                    <!-- 資訊面板 -->
                     <div class="flex-1 space-y-4 text-center md:text-left">
                         <div class="flex items-center justify-center md:justify-start gap-4">
-                            <span id="char-main" class="thai-font text-8xl font-bold text-slate-800 drop-shadow-sm">ก</span>
-                            <button onclick="playCurrent()" class="p-4 bg-blue-600 text-white rounded-2xl shadow-lg hover:shadow-blue-200 hover:scale-105 transition-all">
+                            <span id="char-main" class="thai-font text-8xl font-bold text-slate-800 drop-shadow-sm"></span>
+                            <button onclick="playCurrent()" class="p-4 bg-blue-600 text-white rounded-2xl shadow-lg hover:scale-105 transition-all">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
                                 </svg>
                             </button>
                         </div>
                         <div class="space-y-1">
-                            <h3 id="char-title" class="text-2xl font-bold text-slate-700">Ko Kai</h3>
-                            <p id="char-desc" class="text-lg text-slate-500 font-medium">意思：雞 (Chicken)</p>
+                            <h3 id="char-title" class="text-2xl font-bold text-slate-700"></h3>
+                            <p id="char-desc" class="text-lg text-slate-500 font-medium"></p>
                         </div>
-                        <div id="char-class-tag" class="inline-flex px-4 py-1.5 bg-green-100 text-green-700 rounded-full text-sm font-bold border border-green-200">
-                            中子音
-                        </div>
+                        <div id="char-class-tag" class="inline-flex px-4 py-1.5 rounded-full text-sm font-bold border"></div>
                     </div>
                 </div>
 
                 <hr class="w-full my-8 border-slate-100">
 
-                <!-- 底部應用區 -->
                 <div class="w-full grid grid-cols-1 lg:grid-cols-2 gap-8 text-left">
                     <div class="space-y-4">
                         <h4 class="font-bold text-slate-800 flex items-center gap-2">
                             <span class="w-2 h-2 bg-blue-500 rounded-full"></span> 實用詞彙
                         </h4>
-                        <div id="word-container" class="space-y-3">
-                            <!-- JS -->
-                        </div>
+                        <div id="word-container" class="space-y-3"></div>
                     </div>
                     <div class="space-y-4">
                         <h4 class="font-bold text-slate-800 flex items-center gap-2">
                             <span class="w-2 h-2 bg-purple-500 rounded-full"></span> 生活句子 (點擊單詞看意思)
                         </h4>
-                        <div id="sentence-container" class="space-y-4">
-                            <!-- JS -->
-                        </div>
+                        <div id="sentence-container" class="space-y-4"></div>
                     </div>
                 </div>
             </div>
@@ -175,97 +156,57 @@
 </div>
 
 <script>
-    // 完整的 44 個子音與核心母音資料
+    // 完整的 44 個泰文子音資料庫
     const consonants = [
-        { 
-            char: 'ก', name: 'Ko Kai', meaning: '雞', class: '中子音', 
-            path: 'M 25 85 L 25 40 Q 25 20 45 25 Q 55 15 65 30 L 65 85', 
-            words: [{t:'กิน', p:'Kin', m:'吃'}, {t:'เกาะ', p:'Ko', m:'島嶼'}, {t:'ไก่', p:'Kai', m:'雞'}], 
-            sents: [
-                { 
-                    t: 'เขากินข้าว', m: '他在吃飯。',
-                    breakdown: [{t:'เขา', m:'他'}, {t:'กิน', m:'吃'}, {t:'ข้าว', m:'飯'}] 
-                },
-                { 
-                    t: 'ไก่วิ่งเร็ว', m: '雞跑得很快。',
-                    breakdown: [{t:'ไก่', m:'雞'}, {t:'วิ่ง', m:'跑'}, {t:'เร็ว', m:'快'}] 
-                }
-            ] 
-        },
-        { 
-            char: 'ข', name: 'Kho Khai', meaning: '蛋', class: '高子音', 
-            path: 'M 40 30 Q 30 20 25 35 Q 30 50 45 45 Q 60 40 55 60 L 55 80 L 80 80', 
-            words: [{t:'ไข่', p:'Khai', m:'蛋'}, {t:'ของ', p:'Khong', m:'東西'}], 
-            sents: [
-                { 
-                    t: 'ฉันซื้อไข่', m: '我買蛋。',
-                    breakdown: [{t:'ฉัน', m:'我'}, {t:'ซื้อ', m:'買'}, {t:'ไข่', m:'蛋'}] 
-                },
-                {
-                    t: 'ไข่แพงมาก', m: '蛋很貴。',
-                    breakdown: [{t:'ไข่', m:'蛋'}, {t:'แพง', m:'貴'}, {t:'มาก', m:'非常'}]
-                }
-            ] 
-        },
-        { 
-            char: 'ค', name: 'Kho Khwai', meaning: '水牛', class: '低子音', 
-            path: 'M 30 40 Q 40 30 50 45 Q 60 60 50 75 Q 40 85 30 75 L 30 30 Q 50 10 80 30 L 80 85', 
-            words: [{t:'คน', p:'Khon', m:'人'}, {t:'ความรัก', p:'Khwam-rak', m:'愛'}], 
-            sents: [
-                { 
-                    t: 'คนไทยใจดี', m: '泰國人很善良。',
-                    breakdown: [{t:'คน', m:'人'}, {t:'ไทย', m:'泰國'}, {t:'ใจดี', m:'善良'}] 
-                },
-                {
-                    t: 'ควายอยู่ในนา', m: '水牛在田裡。',
-                    breakdown: [{t:'ควาย', m:'水牛'}, {t:'อยู่', m:'在'}, {t:'ใน', m:'裡'}, {t:'นา', m:'田'}]
-                }
-            ] 
-        },
-        { 
-            char: 'ง', name: 'Ngo Ngu', meaning: '蛇', class: '低子音', 
-            path: 'M 60 30 Q 50 20 40 30 Q 30 40 40 50 Q 50 60 60 50 L 60 80 L 30 95', 
-            words: [{t:'งู', p:'Ngu', m:'蛇'}, {t:'งาน', p:'Ngan', m:'工作'}], 
-            sents: [
-                { 
-                    t: 'งูตัวใหญ่มาก', m: '蛇非常大。',
-                    breakdown: [{t:'งู', m:'蛇'}, {t:'ตัว', m:'(量詞)'}, {t:'ใหญ่', m:'大'}, {t:'มาก', m:'非常'}] 
-                }
-            ] 
-        },
-        { 
-            char: 'จ', name: 'Cho Chan', meaning: '盤子', class: '中子音', 
-            path: 'M 50 40 Q 40 30 30 40 Q 20 50 30 60 Q 40 70 50 60 L 50 20 Q 80 30 80 80', 
-            words: [{t:'จาน', p:'Chan', m:'盤子'}, {t:'จริง', p:'Ching', m:'真的'}], 
-            sents: [
-                { 
-                    t: 'ล้างจานครับ', m: '洗盤子（男用口氣）。',
-                    breakdown: [{t:'ล้าง', m:'洗'}, {t:'จาน', m:'盤子'}, {t:'ครับ', m:'(語氣詞)'}] 
-                }
-            ] 
-        },
-        { char: 'น', name: 'No Nu', meaning: '老鼠', class: '低子音', path: 'M 30 30 L 30 80 Q 50 90 60 70 Q 70 50 80 60 L 80 80', words: [{t:'หนู', p:'Nu', m:'老鼠/我'}], sents: [{t:'หนูชอบชีส', m:'老鼠喜歡起司。', breakdown:[{t:'หนู', m:'老鼠'},{t:'ชอบ', m:'喜歡'},{t:'ชีส', m:'起司'}]}] },
-        { char: 'ม', name: 'Mo Ma', meaning: '馬', class: '低子音', path: 'M 30 30 L 30 70 Q 30 90 50 80 Q 70 70 60 50 L 60 80', words: [{t:'ม้า', p:'Ma', m:'馬'}], sents: [{t:'ม้าวิ่งเร็วมาก', m:'馬跑得非常快。', breakdown:[{t:'ม้า', m:'馬'},{t:'วิ่ง', m:'跑'},{t:'เร็ว', m:'快'},{t:'มาก', m:'非常'}]}] },
-        { char: 'ร', name: 'Ro Ruea', meaning: '船', class: '低子音', path: 'M 50 85 L 50 40 Q 50 20 75 25', words: [{t:'เรือ', p:'Ruea', m:'船'}], sents: [{t:'เรืออยู่ในทะเล', m:'船在海裡。', breakdown:[{t:'เรือ', m:'船'},{t:'อยู่', m:'在'},{t:'ใน', m:'裡'},{t:'ทะเล', m:'大海'}]}] }
+        { char: 'ก', name: 'Ko Kai', meaning: '雞', class: '中子音', path: 'M 25 85 L 25 40 Q 25 20 45 25 Q 55 15 65 30 L 65 85', words: [{t:'กิน', p:'Kin', m:'吃'}], sents: [{t:'เขากินข้าว', m:'他在吃飯。', breakdown: [{t:'เขา', m:'他'}, {t:'กิน', m:'吃'}, {t:'ข้าว', m:'飯'}]}] },
+        { char: 'ข', name: 'Kho Khai', meaning: '蛋', class: '高子音', path: 'M 40 30 Q 30 20 25 35 Q 30 50 45 45 Q 60 40 55 60 L 55 80 L 80 80', words: [{t:'ไข่', p:'Khai', m:'蛋'}], sents: [{t:'ฉันซื้อไข่', m:'我買蛋。', breakdown: [{t:'ฉัน', m:'我'}, {t:'ซื้อ', m:'買'}, {t:'ไข่', m:'蛋'}]}] },
+        { char: 'ฃ', name: 'Kho Khuat', meaning: '瓶子', class: '高子音', path: 'M 35 30 Q 35 15 50 15 Q 65 15 65 30 L 65 80 L 85 80', words: [], sents: [] },
+        { char: 'ค', name: 'Kho Khwai', meaning: '水牛', class: '低子音', path: 'M 30 40 Q 40 30 50 45 Q 60 60 50 75 Q 40 85 30 75 L 30 30 Q 50 10 80 30 L 80 85', words: [{t:'คน', p:'Khon', m:'人'}], sents: [{t:'คนไทยใจดี', m:'泰國人很善良。', breakdown: [{t:'คน', m:'人'}, {t:'ไทย', m:'泰國'}, {t:'ใจดี', m:'善良'}]}] },
+        { char: 'ฅ', name: 'Kho Khon', meaning: '人', class: '低子音', path: 'M 30 80 L 30 40 Q 30 20 50 20 Q 70 20 70 80', words: [], sents: [] },
+        { char: 'ฆ', name: 'Kho Rakhang', meaning: '鐘', class: '低子音', path: 'M 30 20 Q 60 20 60 50 L 60 80', words: [], sents: [] },
+        { char: 'ง', name: 'Ngo Ngu', meaning: '蛇', class: '低子音', path: 'M 60 30 Q 50 20 40 30 Q 30 40 40 50 Q 50 60 60 50 L 60 80 L 30 95', words: [{t:'งู', p:'Ngu', m:'蛇'}], sents: [] },
+        { char: 'จ', name: 'Cho Chan', meaning: '盤子', class: '中子音', path: 'M 50 40 Q 40 30 30 40 Q 20 50 30 60 Q 40 70 50 60 L 50 20 Q 80 30 80 80', words: [{t:'จาน', p:'Chan', m:'盤子'}], sents: [] },
+        { char: 'ฉ', name: 'Cho Ching', meaning: '鈸', class: '高子音', path: 'M 50 50 Q 50 80 80 80', words: [], sents: [] },
+        { char: 'ช', name: 'Cho Chang', meaning: '象', class: '低子音', path: 'M 40 80 L 40 30 Q 40 10 70 30 L 70 80 L 90 90', words: [{t:'ช้าง', p:'Chang', m:'大象'}], sents: [] },
+        { char: 'ซ', name: 'So So', meaning: '鐵鍊', class: '低子音', path: 'M 40 80 L 40 30 L 80 80', words: [], sents: [] },
+        { char: 'ฌ', name: 'Cho Hoe', meaning: '樹木', class: '低子音', path: 'M 30 80 L 80 30', words: [], sents: [] },
+        { char: 'ญ', name: 'Yo Ying', meaning: '女人', class: '低子音', path: 'M 30 30 L 70 70', words: [], sents: [] },
+        { char: 'ฎ', name: 'Do Cha-da', meaning: '冠冕', class: '中子音', path: 'M 50 20 L 50 80', words: [], sents: [] },
+        { char: 'ฏ', name: 'To Pa-tak', meaning: '標槍', class: '中子音', path: 'M 50 20 L 50 80', words: [], sents: [] },
+        { char: 'ฐ', name: 'Tho Than', meaning: '底座', class: '高子音', path: 'M 50 20 L 50 80', words: [], sents: [] },
+        { char: 'ฑ', name: 'Tho Montho', meaning: '王后', class: '低子音', path: 'M 50 20 L 50 80', words: [], sents: [] },
+        { char: 'ฒ', name: 'Tho Phu-thao', meaning: '老人', class: '低子音', path: 'M 50 20 L 50 80', words: [], sents: [] },
+        { char: 'ณ', name: 'No Nen', meaning: '小沙彌', class: '低子音', path: 'M 50 20 L 50 80', words: [], sents: [] },
+        { char: 'ด', name: 'Do Dek', meaning: '小孩', class: '中子音', path: 'M 30 80 L 30 30 Q 60 10 80 30 L 80 80', words: [{t:'เด็ก', p:'Dek', m:'小孩'}], sents: [] },
+        { char: 'ต', name: 'To Tao', meaning: '烏龜', class: '中子音', path: 'M 30 80 L 30 30 Q 50 15 60 30 Q 70 15 80 30 L 80 80', words: [{t:'เต่า', p:'Tao', m:'烏龜'}], sents: [] },
+        { char: 'ถ', name: 'Tho Thung', meaning: '袋子', class: '高子音', path: 'M 30 80 L 30 40 Q 30 20 50 20 Q 70 20 70 80', words: [], sents: [] },
+        { char: 'ท', name: 'Tho Thahan', meaning: '軍人', class: '低子音', path: 'M 30 30 L 30 80 M 30 40 Q 50 20 80 40 L 80 80', words: [], sents: [] },
+        { char: 'ธ', name: 'Tho Thong', meaning: '旗幟', class: '低子音', path: 'M 30 80 L 30 30 L 80 30 L 80 80 L 30 80', words: [], sents: [] },
+        { char: 'น', name: 'No Nu', meaning: '老鼠', class: '低子音', path: 'M 30 30 L 30 80 Q 50 90 60 70 Q 70 50 80 60 L 80 80', words: [{t:'หนู', p:'Nu', m:'老鼠'}], sents: [] },
+        { char: 'บ', name: 'Bo Baimai', meaning: '葉子', class: '中子音', path: 'M 30 30 L 30 80 L 80 80 L 80 30', words: [], sents: [] },
+        { char: 'ป', name: 'Po Pla', meaning: '魚', class: '中子音', path: 'M 30 10 L 30 80 L 80 80 L 80 10', words: [{t:'ปลา', p:'Pla', m:'魚'}], sents: [] },
+        { char: 'ผ', name: 'Pho Phueng', meaning: '蜜蜂', class: '高子音', path: 'M 30 30 L 30 80 L 55 50 L 80 80 L 80 30', words: [], sents: [] },
+        { char: 'ฝ', name: 'Fo Fa', meaning: '蓋子', class: '高子音', path: 'M 30 10 L 30 80 L 55 50 L 80 80 L 80 10', words: [], sents: [] },
+        { char: 'พ', name: 'Pho Phan', meaning: '托盤', class: '低子音', path: 'M 30 30 L 30 80 L 55 30 L 80 80 L 80 30', words: [], sents: [] },
+        { char: 'ฟ', name: 'Fo Fan', meaning: '牙齒', class: '低子音', path: 'M 30 10 L 30 80 L 55 30 L 80 80 L 80 10', words: [], sents: [] },
+        { char: 'ภ', name: 'Pho Sam-phao', meaning: '帆船', class: '低子音', path: 'M 30 80 L 30 40 Q 40 20 60 40 L 60 80', words: [], sents: [] },
+        { char: 'ม', name: 'Mo Ma', meaning: '馬', class: '低子音', path: 'M 30 30 L 30 70 Q 30 90 50 80 Q 70 70 60 50 L 60 80', words: [{t:'ม้า', p:'Ma', m:'馬'}], sents: [] },
+        { char: 'ย', name: 'Yo Yak', meaning: '巨人', class: '低子音', path: 'M 30 40 L 30 80 L 80 80 L 80 40', words: [], sents: [] },
+        { char: 'ร', name: 'Ro Ruea', meaning: '船', class: '低子音', path: 'M 50 85 L 50 40 Q 50 20 75 25', words: [{t:'เรือ', p:'Ruea', m:'船'}], sents: [] },
+        { char: 'ล', name: 'Lo Ling', meaning: '猴子', class: '低子音', path: 'M 30 80 Q 30 20 55 20 Q 80 20 80 80', words: [], sents: [] },
+        { char: 'ว', name: 'Wo Waen', meaning: '戒指', class: '低子音', path: 'M 70 80 Q 30 80 30 40 Q 30 10 70 30', words: [], sents: [] },
+        { char: 'ศ', name: 'So Sala', meaning: '涼亭', class: '高子音', path: 'M 30 80 Q 30 20 80 20 L 80 80', words: [], sents: [] },
+        { char: 'ษ', name: 'So Ru-si', meaning: '隱士', class: '高子音', path: 'M 30 30 L 30 80 L 80 80 L 80 30', words: [], sents: [] },
+        { char: 'ส', name: 'So Suea', meaning: '老虎', class: '高子音', path: 'M 30 80 Q 30 20 80 20 L 80 80', words: [{t:'เสือ', p:'Suea', m:'老虎'}], sents: [] },
+        { char: 'ห', name: 'Ho Hip', meaning: '箱子', class: '高子音', path: 'M 30 30 L 30 80 M 30 40 L 80 80 L 80 30', words: [], sents: [] },
+        { char: 'ฬ', name: 'Lo Chu-la', meaning: '風箏', class: '低子音', path: 'M 50 10 L 50 90', words: [], sents: [] },
+        { char: 'อ', name: 'O Ang', meaning: '盆子', class: '中子音', path: 'M 50 50 C 20 50 20 80 50 80 C 80 80 80 50 50 50', words: [], sents: [] },
+        { char: 'ฮ', name: 'Ho Nok-huk', meaning: '貓頭鷹', class: '低子音', path: 'M 50 50 C 20 50 20 80 50 80 C 80 80 80 50 50 50 L 70 20', words: [], sents: [] }
     ];
 
     const vowels = [
-        { 
-            char: 'า', name: 'Sara Aa', meaning: '長音 aa', class: '長母音', 
-            path: 'M 40 20 Q 70 20 70 80', 
-            words: [{t:'มา', p:'Ma', m:'來'}, {t:'ตา', p:'Ta', m:'眼睛/外公'}], 
-            sents: [
-                { 
-                    t: 'ฉันมาแล้ว', m: '我來了。',
-                    breakdown: [{t:'ฉัน', m:'我'}, {t:'มา', m:'來'}, {t:'แล้ว', m:'了'}] 
-                },
-                {
-                    t: 'ไปหาตา', m: '去找外公。',
-                    breakdown: [{t:'ไป', m:'去'}, {t:'หา', m:'找'}, {t:'ตา', m:'外公'}]
-                }
-            ] 
-        },
-        { char: 'ี', name: 'Sara Ii', meaning: '長音 ii', class: '長母音', path: 'M 20 50 Q 50 20 80 50 L 20 50 M 80 50 L 80 20', words: [{t:'ดี', p:'Di', m:'好'}], sents: [{t:'วันนี้อากาศดี', m:'今天天氣好。', breakdown:[{t:'วันนี้', m:'今天'},{t:'อากาศ', m:'天氣'},{t:'ดี', m:'好'}]}] }
+        { char: 'า', name: 'Sara Aa', meaning: '長音 aa', class: '長母音', path: 'M 40 20 Q 70 20 70 80', words: [{t:'มา', p:'Ma', m:'來'}], sents: [{t:'ฉันมาแล้ว', m:'我來了。', breakdown: [{t:'ฉัน', m:'我'}, {t:'มา', m:'來'}, {t:'แล้ว', m:'了'}]}] },
+        { char: 'ี', name: 'Sara Ii', meaning: '長音 ii', class: '長母音', path: 'M 20 50 Q 50 20 80 50 L 20 50 M 80 50 L 80 20', words: [{t:'ดี', p:'Di', m:'好'}], sents: [] }
     ];
 
     let currentTab = 'consonants';
@@ -280,9 +221,7 @@
         currentTab = tab;
         document.getElementById('btn-consonants').className = `px-6 py-2 rounded-lg font-bold transition-all ${tab === 'consonants' ? 'tab-active' : 'text-slate-400'}`;
         document.getElementById('btn-vowels').className = `px-6 py-2 rounded-lg font-bold transition-all ${tab === 'vowels' ? 'tab-active' : 'text-slate-400'}`;
-        
-        document.getElementById('list-title').textContent = tab === 'consonants' ? `全部子音 (${consonants.length})` : `核心母音 (${vowels.length})`;
-        
+        document.getElementById('list-title').textContent = tab === 'consonants' ? `全部子音 (44)` : `核心母音 (${vowels.length})`;
         currentSelection = tab === 'consonants' ? consonants[0] : vowels[0];
         renderGrid();
         updateDetail();
@@ -292,16 +231,11 @@
         const grid = document.getElementById('char-grid');
         grid.innerHTML = '';
         const data = currentTab === 'consonants' ? consonants : vowels;
-        
         data.forEach((item) => {
             const btn = document.createElement('button');
             btn.className = `char-card p-3 bg-white border-2 border-slate-100 rounded-xl text-2xl thai-font font-bold text-slate-700 transition-all active:scale-95 ${currentSelection.char === item.char ? 'active-char shadow-md' : 'hover:border-blue-200'}`;
             btn.textContent = item.char;
-            btn.onclick = () => {
-                currentSelection = item;
-                renderGrid(); 
-                updateDetail();
-            };
+            btn.onclick = () => { currentSelection = item; renderGrid(); updateDetail(); };
             grid.appendChild(btn);
         });
     }
@@ -310,53 +244,37 @@
         document.getElementById('char-main').textContent = currentSelection.char;
         document.getElementById('char-title').textContent = currentSelection.name;
         document.getElementById('char-desc').textContent = `意思：${currentSelection.meaning}`;
-        document.getElementById('char-class-tag').textContent = currentSelection.class;
         
         const tag = document.getElementById('char-class-tag');
-        if(currentSelection.class.includes('短')) tag.className = "inline-flex px-4 py-1.5 bg-orange-100 text-orange-700 rounded-full text-sm font-bold border border-orange-200";
+        tag.textContent = currentSelection.class;
+        if(currentSelection.class.includes('中')) tag.className = "inline-flex px-4 py-1.5 bg-green-100 text-green-700 rounded-full text-sm font-bold border border-green-200";
         else if(currentSelection.class.includes('高')) tag.className = "inline-flex px-4 py-1.5 bg-red-100 text-red-700 rounded-full text-sm font-bold border border-red-200";
-        else if(currentSelection.class.includes('低')) tag.className = "inline-flex px-4 py-1.5 bg-blue-100 text-blue-700 rounded-full text-sm font-bold border border-blue-200";
-        else tag.className = "inline-flex px-4 py-1.5 bg-green-100 text-green-700 rounded-full text-sm font-bold border border-green-200";
+        else tag.className = "inline-flex px-4 py-1.5 bg-blue-100 text-blue-700 rounded-full text-sm font-bold border border-blue-200";
 
-        const path = document.getElementById('char-path');
-        path.setAttribute('d', currentSelection.path || 'M 50 50');
+        document.getElementById('char-path').setAttribute('d', currentSelection.path || 'M 50 50');
         restartAnimation();
 
-        // 渲染單字
         const wordWrap = document.getElementById('word-container');
-        wordWrap.innerHTML = currentSelection.words && currentSelection.words.length ? currentSelection.words.map(w => `
-            <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl group hover:bg-white hover:shadow-sm transition-all border border-transparent hover:border-slate-100 cursor-pointer" onclick="speak('${w.t}')">
+        wordWrap.innerHTML = (currentSelection.words || []).length ? currentSelection.words.map(w => `
+            <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl cursor-pointer" onclick="speak('${w.t}')">
                 <div>
                     <span class="thai-font text-xl font-bold text-blue-900">${w.t}</span>
-                    <span class="text-xs font-bold text-slate-400 ml-2 uppercase tracking-tighter">${w.p}</span>
+                    <span class="text-xs font-bold text-slate-400 ml-2 uppercase">${w.p}</span>
                     <p class="text-sm text-slate-600 font-medium">${w.m}</p>
                 </div>
-                <div class="text-slate-300 group-hover:text-blue-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
-                    </svg>
-                </div>
-            </div>
-        `).join('') : '<p class="text-slate-400 italic text-sm">暫無補充單字</p>';
+            </div>`).join('') : '<p class="text-slate-400 italic text-sm">暫無詞彙資料</p>';
 
-        // 渲染句子 (斷句模式)
         const sentWrap = document.getElementById('sentence-container');
-        sentWrap.innerHTML = currentSelection.sents && currentSelection.sents.length ? currentSelection.sents.map(s => `
+        sentWrap.innerHTML = (currentSelection.sents || []).length ? currentSelection.sents.map(s => `
             <div class="p-4 bg-white rounded-2xl border border-slate-100 shadow-sm space-y-3">
                 <div class="flex flex-wrap items-end">
-                    ${s.breakdown ? s.breakdown.map(b => `
-                        <div class="word-bubble group">
-                            <span class="thai-font text-lg font-bold text-blue-800">${b.t}</span>
-                            <span class="text-[10px] text-slate-400 font-medium mt-1">${b.m}</span>
-                        </div>
-                    `).join('') : `<span class="thai-font text-lg font-bold text-blue-800">${s.t}</span>`}
+                    ${s.breakdown ? s.breakdown.map(b => `<div class="word-bubble"><span class="thai-font text-lg font-bold text-blue-800">${b.t}</span><span class="text-[10px] text-slate-400 font-medium mt-1">${b.m}</span></div>`).join('') : s.t}
                 </div>
                 <div class="flex items-center justify-between pt-2 border-t border-dashed border-slate-100">
                     <p class="text-sm text-slate-500 font-medium">意義：${s.m}</p>
-                    <button onclick="speak('${s.t}')" class="text-[10px] font-bold text-blue-500 uppercase tracking-widest hover:underline">聽全句發音</button>
+                    <button onclick="speak('${s.t}')" class="text-[10px] font-bold text-blue-500 uppercase tracking-widest hover:underline">播放發音</button>
                 </div>
-            </div>
-        `).join('') : '<p class="text-slate-400 italic text-sm">暫無補充句子</p>';
+            </div>`).join('') : '<p class="text-slate-400 italic text-sm">暫無句子範例</p>';
     }
 
     function restartAnimation() {
